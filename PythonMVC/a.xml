@@ -1,0 +1,1165 @@
+<testCase version="1.0" tcid="tc001" qcid="qc001" >
+    <general>
+        <author>OAM Team Stuttgart</author>
+        <created>2011-09-09</created>
+        <purpose>The scheduler starts a testsession with data configure in the cfg-file.
+More information can be found in the wiki page:
+https://confluence.app.alcatel-lucent.com/display/eNBOAM/Best+Practice+for+TC+scheduling+and+configuration+files</purpose>
+        <usage>1. call &lt;-function testjob_scheduler::testjob_scheduler -testjobcfgfile $testjobcfgfile>
+2. run &lt;testjob_scheduler -testjobcfgfile $testjobcfgfile></usage>
+        <title>testjob_scheduler</title>
+    </general>
+    <procedure desc="starts a testsession with the parameters as defined in the cfg-file" type="public" name="testjob_scheduler" >
+        <arguments>
+            <arg desc="Param to run the testcase scheduler" attribute="mandatory" available="" type="string" value="" index="1" name="testjobcfgfile" />
+        </arguments>
+        <variables>
+            <var type="string" value="" index="" name="result" />
+            <var type="TMap" value="" index="10" name="jobCfg" />
+            <var type="TMap" value="" index="2" name="tcProperty" />
+            <var type="TDateTime" value="" index="3" name="timestamp" />
+            <var type="int" value="" index="6" name="i" />
+            <var type="TArray" index="5" name="jobs" />
+            <var type="TMap" index="9" name="pm" />
+            <var type="string" index="7" name="str" />
+            <var type="TFile" index="4" name="jobFile" />
+            <var type="TArray" index="8" name="job" />
+            <var type="int" value="" index="10" name="c" />
+            <var type="string" value="" index="1" name="jobRes" />
+            <var type="string" value="" index="5" name="tcn" />
+            <var type="int" value="" index="7" name="n" />
+            <var type="string" index="2" name="preRes" />
+            <var type="string" index="8" name="opt" />
+            <var type="string" index="9" name="cfg" />
+            <var type="int" index="11" name="failResCount" />
+            <var type="int" index="19" name="rep" />
+            <var type="string" index="20" name="summaryString" />
+            <var type="string" index="21" name="answer" />
+            <var type="string" value="" index="" name="logfile" />
+            <var desc="" type="TFile" index="23" name="schedPropFile" />
+        </variables>
+        <respmappingList/>
+        <steps>
+            <step action="comment" uuid="{1f094a62-0e58-4998-b92e-2f34c91c4d53}" object=" " >
+                <parameter>-----get configfile for job-------------------------</parameter>
+                <response/>
+                <subSteps>
+                    <step action="getETConfig" uuid="{ae4d55a0-b654-4c57-bc74-7415716a5993}" object=" " >
+                        <parameter>$tcProperty</parameter>
+                        <response/>
+                    </step>
+                    <step action="getConfigValue" uuid="{89a778a2-1f78-4b7e-9a98-ee62b7aa092b}" object=" " >
+                        <parameter>-configFileName $testjobcfgfile -key jobenb -value $result</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="ifFailed" uuid="{3cb0cdb4-462d-4c12-b50b-af3bd93087c7}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="print" uuid="{0dcad354-b5e9-4a18-afb1-ff3d34471adf}" object=" " >
+                                        <parameter>Error: jobenb not defined in $testjobcfgfile</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="failCase" uuid="{8f1449c5-8c22-4315-9d7a-5f19c3422c9a}" object=" " >
+                                        <parameter></parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="else" uuid="{2567a084-8de1-4e9a-9a90-3d7e08c3e667}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{e3f639d6-961f-4eeb-9006-f05614aa4ade}" object=" " >
+                                        <parameter>$jobCfg["enb"]=$result</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="getConfigValue" uuid="{49c64bbf-cccf-4aec-beb0-223ac6ad229c}" object=" " >
+                        <parameter>-configFileName $testjobcfgfile -key jobiterations -value $result</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="ifFailed" uuid="{8e791d9d-056d-4b26-960d-90548f92540f}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{5e91b91a-40da-4675-a293-88f45e4af29b}" object=" " >
+                                        <parameter>$jobCfg["iter"]=1</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="else" uuid="{629f4f06-8927-4c59-b499-02e64a50034a}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{781c71cd-30b6-424b-bdef-42c60197c675}" object=" " >
+                                        <parameter>$jobCfg["iter"]=$result</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="getConfigValue" uuid="{220181ab-742f-4362-b5de-f175c9eff0ce}" object=" " >
+                        <parameter>-configFileName $testjobcfgfile -key jobinput -value $result</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="ifFailed" uuid="{a38ba598-f0fc-4da4-bfd2-86c32f677976}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="print" uuid="{2612dfda-6e84-4ccf-b398-dff2a5c3f135}" object=" " >
+                                        <parameter>Error: jobinput not defined in $testjobcfgfile</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="failCase" uuid="{c10a9e63-22fe-4491-9fdc-70b40016001a}" object=" " >
+                                        <parameter></parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="else" uuid="{08b56f36-f545-4bd7-bb70-7546cee0e701}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="comment" uuid="{62650f4d-4877-435e-84b5-18e348acc41c}" object=" " >
+                                        <parameter>-- input file with relative path --</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="eval" uuid="{ae7a4ea5-868e-44cb-a02d-3b6e2bacfcb7}" object=" " >
+                                        <parameter>$result=$tcProperty["workspacepath"]+"/config/"+$result</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="eval" uuid="{3b221717-37e1-44a5-a106-1946082f6249}" object=" " >
+                                        <parameter>$jobCfg["input"]=$result</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="getConfigValue" uuid="{0bbe0e7b-83cd-4ae9-adb4-40861ea6a474}" object=" " >
+                        <parameter>-configFileName $testjobcfgfile -key jobTSmode -value $result</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="ifFailed" uuid="{fcf0700e-5e05-4f28-8cb9-5256a8eb3530}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{2c6e6965-5564-4a63-a5c1-899c6a23b50e}" object=" " >
+                                        <parameter>$jobCfg["tsMode"]="ignore"</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="else" uuid="{7885a83b-1f0d-4644-9e2d-1cccba0c24d7}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{e1edb570-3716-4914-9ba5-d0781d3bbac7}" object=" " >
+                                        <parameter>$jobCfg["tsMode"]=$result</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="getConfigValue" uuid="{d6709e65-b253-4faa-83a1-5e48cc96c488}" object=" " >
+                        <parameter>-configFileName $testjobcfgfile -key jobTShost -value $result</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="ifFailed" uuid="{cb8b2a69-08c8-4d57-91fb-b4df04cc5f16}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{0ce077c4-40dd-4b4c-87d0-fd0eb0dbea03}" object=" " >
+                                        <parameter>$jobCfg["tsHost"]=""</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="else" uuid="{9f0880d2-194f-4e14-ae4f-4702a96fbd7a}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{75d3f498-9669-42ef-9f9f-5a62fd7f1357}" object=" " >
+                                        <parameter>$jobCfg["tsHost"]=$result</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="getConfigValue" uuid="{d40e4133-124a-4a1d-b46e-395519a9f868}" object=" " >
+                        <parameter>-configFileName $testjobcfgfile -key jobsummary -value $result</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="ifFailed" uuid="{0e6b0952-1a3c-41c8-af48-ff692d153814}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{367e47ff-3271-4dd4-874a-3ff6bf3b9bea}" object=" " >
+                                        <parameter>$jobCfg["summary"]="ignore"</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="else" uuid="{1f7dab1b-98cf-43d8-a8b1-c8d65166b2e5}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{87706dea-3496-472c-8006-6d31c24cbae4}" object=" " >
+                                        <parameter>$jobCfg["summary"]=$result</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                </subSteps>
+            </step>
+            <step action="comment" uuid="{3bf81abc-f798-4134-8f8a-6cff15a20ee3}" object=" " >
+                <parameter>-----init the global variables for log-------------</parameter>
+                <response/>
+                <subSteps>
+                    <step action="eval" uuid="{5259ad8a-6dd5-40be-b9d4-b6162ef053d6}" object=" " >
+                        <parameter>$result=$tcProperty["workspacepath"]+"/log/"+$jobCfg["enb"]+"/"</parameter>
+                        <response/>
+                    </step>
+                    <step action="getTcProperty" uuid="{d69fb127-0a26-4e4d-8839-68e2f38ab741}" object=" " >
+                        <parameter>$tcProperty</parameter>
+                        <response/>
+                    </step>
+                    <step action="eval" uuid="{c8f9aa0d-891b-4aad-bb5c-a3aef1630df9}" object=" " >
+                        <parameter>$jobCfg["logDir"]=$tcProperty["tcname"]+$timestamp.currentDateTime().toString("_yyyyMMdd_hhmmss")</parameter>
+                        <response/>
+                    </step>
+                    <step action="eval" uuid="{ee851510-4e06-475a-abfc-7687958d1d3e}" object=" " >
+                        <parameter>$result+=$jobCfg["logDir"]+"/"</parameter>
+                        <response/>
+                    </step>
+                    <step action="mkDir" uuid="{ea181859-826a-4f73-b082-4df1ac3b12da}" object=" " >
+                        <parameter>$result</parameter>
+                        <response/>
+                    </step>
+                    <step action="setGlobalVariable" uuid="{3972890c-4e2b-4508-8415-52ca899ab3c5}" object=" " >
+                        <parameter>g_logfilePath $result</parameter>
+                        <response/>
+                    </step>
+                    <step action="eval" uuid="{a01559b6-ab9e-4e34-8825-aa576d0cab96}" object=" " >
+                        <parameter>$result+="result.txt"</parameter>
+                        <response/>
+                    </step>
+                    <step action="setGlobalVariable" uuid="{888603fb-bba9-4a03-8939-924fee411bb0}" object=" " >
+                        <parameter>tc_result_file $result</parameter>
+                        <response/>
+                    </step>
+                    <step action="comment" uuid="{19fd3f8d-3e33-4b75-8d94-84abb5f4c2ff}" object=" " >
+                        <parameter>------------ create property file for trace storage -------------</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="eval" uuid="{82785d40-72e0-4065-9cb2-e79376bec01d}" object=" " >
+                                <parameter>$result=$schedPropFile.open("scheduler_properties.txt")</parameter>
+                                <response/>
+                            </step>
+                            <step action="ifFailed" uuid="{fb8862c3-e7dd-443a-a6a2-b75414570318}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="print" uuid="{69ff2192-c8d9-4bab-8f92-208660362255}" object=" " >
+                                        <parameter>Failed to open or create "scheduler_properties.txt" file!</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="eval" uuid="{8ab29266-e432-4de7-b390-0838fe602b03}" object=" " >
+                                <parameter>$schedPropFile.truncate()</parameter>
+                                <response/>
+                            </step>
+                            <step action="eval" uuid="{c3449d22-d138-4f0e-9662-cb71a4ef144c}" object=" " >
+                                <parameter>$schedPropFile.appendLine($jobCfg["enb"]+";"+jobCfg["logDir"])</parameter>
+                                <response/>
+                            </step>
+                            <step action="eval" uuid="{8115e00c-bb2a-43eb-ab7f-44f1c855adec}" object=" " >
+                                <parameter>$schedPropFile.close()</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="call" uuid="{e52cf954-ac08-4476-9e51-caf95934af23}" object=" " >
+                        <parameter>-function testjob_scheduler::jobLog -outStr Started</parameter>
+                        <response/>
+                    </step>
+                    <step action="call" uuid="{3956ef30-d2c3-4be6-b3bc-14fc65d95cb2}" object=" " >
+                        <parameter>-function lib/libUtility_General::setLogfileGlobalVariables -TestcaseProperty $tcProperty</parameter>
+                        <response/>
+                    </step>
+                    <step action="getResponse" uuid="{2aa5a87c-60df-4395-a7ed-bf5bc1d55290}" object=" " >
+                        <parameter>$result</parameter>
+                        <response/>
+                    </step>
+                    <step action="ifFailed" uuid="{2b2fb42a-1ce5-4f80-8abf-386a77f3747a}" object=" " >
+                        <parameter></parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="print" uuid="{a15be153-e67c-400f-b478-082745656371}" object=" " >
+                                <parameter>Failed to Intialize the global variables required for print log</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="getGlobalVariable" uuid="{9d431f1b-ee1a-45ec-b4b3-0a8974e44eca}" object=" " >
+                        <parameter>g_logfileName $result</parameter>
+                        <response/>
+                    </step>
+                    <step action="setGlobalVariable" uuid="{52d7bcdb-bd33-4c58-8ccd-99ada8840750}" object=" " >
+                        <parameter>g_schLogfile $result</parameter>
+                        <response/>
+                    </step>
+                </subSteps>
+            </step>
+            <step action="comment" uuid="{ddcb8712-9484-477a-b6df-c66c45b66bc9}" object=" " >
+                <parameter>-----print to the scheduler log-------------------</parameter>
+                <response/>
+                <subSteps>
+                    <step action="call" uuid="{45a9b832-f262-4aa7-8bb2-1a7b19993ab5}" object=" " >
+                        <parameter>-function testjob_scheduler::schLog -outStr Testjob Scheduler started</parameter>
+                        <response/>
+                    </step>
+                    <step action="call" uuid="{9ead5402-fcbf-43a5-a6d0-e6e258902218}" object=" " >
+                        <parameter>-function testjob_scheduler::schLog -outStr Testcase Properties: tcname=$tcProperty["tcname"] functionname=$tcProperty["functionname"]  </parameter>
+                        <response/>
+                    </step>
+                    <step action="call" uuid="{3bbed84e-232b-42bf-a993-902f257eb6c1}" object=" " >
+                        <parameter>-function testjob_scheduler::schLog -outStr " "</parameter>
+                        <response/>
+                    </step>
+                    <step action="call" uuid="{07a545ef-2429-4ad2-936f-129545ad2fbb}" object=" " >
+                        <parameter>-function testjob_scheduler::schLog -outStr eNB name is $jobCfg["enb"] => Testjob: iterations=$jobCfg["iter"] traceServer: Mode=$jobCfg["tsMode"] Host=$jobCfg["tsHost"]</parameter>
+                        <response/>
+                    </step>
+                    <step action="call" uuid="{41bfa23c-1be5-449d-8246-f1acf61f76ad}" object=" " >
+                        <parameter>-function testjob_scheduler::schLog -outStr Job input: $jobCfg["input"]</parameter>
+                        <response/>
+                    </step>
+                </subSteps>
+            </step>
+            <step action="comment" uuid="{c54f1148-5e4e-41c7-a682-82b23d2fcf80}" object=" " >
+                <parameter>-----read input file for job-------------------------</parameter>
+                <response/>
+                <subSteps>
+                    <step action="eval" uuid="{871f33b9-61b9-49b2-b1ee-3b8a0ee4ad48}" object=" " >
+                        <parameter>$jobFile.open($jobCfg["input"]); $jobs=$jobFile.readLines(); $jobFile.close()</parameter>
+                        <response/>
+                    </step>
+                    <step action="if" uuid="{0d7142f8-ed7c-4b50-b2b0-02e5d8f76ec1}" object=" " >
+                        <parameter>$jobs.size()&lt;5</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="call" uuid="{a64bbfbd-c101-4c49-96a4-9717ffbc309c}" object=" " >
+                                <parameter>-function testjob_scheduler::schLog -outStr Job input is empty</parameter>
+                                <response/>
+                            </step>
+                            <step action="failCase" uuid="{fe3cb570-af2c-4de7-9107-37e091a6770b}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="eval" uuid="{815cd4e0-2045-4ab9-8079-09bd2d858dda}" object=" " >
+                        <parameter>$job.split($jobs[0],","); $jobs[0].clear(); $i=0; $str=$str.number($i)</parameter>
+                        <response/>
+                    </step>
+                    <step action="foreach" uuid="{fea501a1-ef55-4e70-9b36-35f4bfc7f889}" object=" " >
+                        <parameter>$result, $job</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="eval" uuid="{6df709dd-2674-4b8b-ab10-c8ca042024c2}" object=" " >
+                                <parameter>$result=$result.trimmed()</parameter>
+                                <response/>
+                            </step>
+                            <step action="if" uuid="{25b00ed8-f77f-4ea8-9255-9a8db5707eef}" object=" " >
+                                <parameter>$result=="Tcfilename"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{e939bdc0-6f43-4016-8f8f-ea35e90863e9}" object=" " >
+                                        <parameter>$pm["tcn"]=$str</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="elseif" uuid="{80f6c458-d7dc-40b8-bb19-4010f3555e3c}" object=" " >
+                                <parameter>$result=="iterations"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{852fc876-25b7-4ba6-9768-bb200c890969}" object=" " >
+                                        <parameter>$pm["itr"]=$str</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="elseif" uuid="{2f80f3c4-e885-4690-85b6-8996834f8ced}" object=" " >
+                                <parameter>$result=="timeout"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{1f590695-58be-49c8-bdca-ed4707e55aac}" object=" " >
+                                        <parameter>$pm["tim"]=$str</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="elseif" uuid="{6fe6e2d4-14e0-4b34-9d04-d11f72657faa}" object=" " >
+                                <parameter>$result=="controloption"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{71ff8cbc-4fca-46ae-b9bf-283e822a6b44}" object=" " >
+                                        <parameter>$pm["con"]=$str</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="elseif" uuid="{30f80c9b-97b2-4c35-98ae-10be4b329d48}" object=" " >
+                                <parameter>$result=="cfgfilename"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{1fbecd52-d761-4104-a500-37ce6dfcc058}" object=" " >
+                                        <parameter>$pm["cfg"]=$str</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="eval" uuid="{1e7c6747-98de-412d-92bb-1b3de9026508}" object=" " >
+                                <parameter>$i++; $str=$str.number($i)</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="eval" uuid="{63d7900e-2c0f-401d-9e97-9a0bb58be959}" object=" " >
+                        <parameter>$pm["np"]=$str; $pm["enb"]=$jobCfg["enb"]; pm["name"]=$tcProperty["tcname"]</parameter>
+                        <response/>
+                    </step>
+                </subSteps>
+            </step>
+            <step action="comment" uuid="{4a9670cb-4f09-4d87-be0f-612274424e0b}" object=" " >
+                <parameter>-----Testcase Scheduler----------------------------</parameter>
+                <response/>
+                <subSteps>
+                    <step action="call" uuid="{7d2154de-efaf-4f13-a876-97275ce4c76f}" object=" " >
+                        <parameter>-function testjob_scheduler::tsCmd -cmd StartTraceServer -par $jobCfg["tsHost"] -cfg $jobCfg["tsMode"]</parameter>
+                        <response/>
+                    </step>
+                    <step action="comment" uuid="{6da3c17d-2e0b-48e4-afa0-23a1d96380cd}" object=" " >
+                        <parameter>---------- Begin of schedule ----------</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="eval" uuid="{4ab01078-bad9-427e-93cd-f94cb4a3ff81}" object=" " >
+                                <parameter>$jobRes="PASSED"; $c=0</parameter>
+                                <response/>
+                            </step>
+                            <step action="eval" uuid="{0f0e7b01-1938-40a7-b9e5-18b5a1bcb334}" object=" " >
+                                <parameter> $rep = $jobCfg["iter"].toInt()</parameter>
+                                <response/>
+                            </step>
+                            <step action="repeat" uuid="{6722fd41-9e15-4ef5-9067-055c81ce683c}" object=" " >
+                                <parameter>$rep</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{2a78d0db-6bd0-4974-924b-80c18a103f6d}" object=" " >
+                                        <parameter>$c++; $preRes=""</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="call" uuid="{3e21afc6-61c7-4dcd-ad4a-5061e85bf52c}" object=" " >
+                                        <parameter>-function testjob_scheduler::jobLog -outStr Job run $c of $rep started</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="call" uuid="{69d7fb84-f1ae-4864-ae0b-bf604519efe1}" object=" " >
+                                        <parameter>-function testjob_scheduler::schLog -outStr " "</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="call" uuid="{75b3f4d3-3791-4aee-91a1-693cf38c78ad}" object=" " >
+                                        <parameter>-function testjob_scheduler::schLog -outStr Testjob Job run $c of $rep started</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="eval" uuid="{cd085037-dfc5-44af-8ec1-b99247ff2f5b}" object=" " >
+                                        <parameter>$str= $pm["enb"]+"/"+$pm["name"]+"_"+$c</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="call" uuid="{6e69ee62-1ea1-413d-b1d1-a568688a4a9e}" object=" " >
+                                        <parameter>-function  testjob_scheduler::tsCmd -cmd StartSession -par $str -cfg $pm["enb"]</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="foreach" uuid="{730d2d4c-cb0e-46e9-ae9a-ef36c61c052c}" object=" " >
+                                        <parameter>$str, $jobs</parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="eval" uuid="{81dcb2fa-6492-4037-9ba3-b7eb739c479c}" object=" " >
+                                                <parameter>$job.split($str,",")</parameter>
+                                                <response/>
+                                            </step>
+                                            <step action="if" uuid="{867cb2cf-dd2e-4b2b-82f4-98f88e1dd5a4}" object=" " >
+                                                <parameter>$job.size()==$pm["np"].toInt()</parameter>
+                                                <response/>
+                                                <subSteps>
+                                                    <step action="eval" uuid="{b74368a4-df51-40e1-b920-5e16b50d5b80}" object=" " >
+                                                        <parameter>$failResCount = 0</parameter>
+                                                        <response/>
+                                                    </step>
+                                                    <step action="eval" uuid="{e54cc0ad-0c48-4ce4-96dd-f3315a1efe76}" object=" " >
+                                                        <parameter>$tcn=$job[$pm["tcn"].toInt()].trimmed()</parameter>
+                                                        <response/>
+                                                    </step>
+                                                    <step action="call" uuid="{060c3e2f-afc2-4e04-99c6-c99ae0b945de}" object=" " >
+                                                        <parameter>-function testjob_scheduler::schLog -outStr " "</parameter>
+                                                        <response/>
+                                                    </step>
+                                                    <step action="if" uuid="{62eec3d2-7f9a-4cae-a6a4-615e7d0d60bd}" object=" " >
+                                                        <parameter>$tcn.startsWith("#") || $tcn.startsWith("//")</parameter>
+                                                        <response/>
+                                                        <subSteps>
+                                                            <step action="call" uuid="{3b46d59c-0466-4ea7-ae14-363b096a8e8d}" object=" " >
+                                                                <parameter>-function testjob_scheduler::schLog -outStr $tcn is commented and will not be executed</parameter>
+                                                                <response/>
+                                                            </step>
+                                                        </subSteps>
+                                                    </step>
+                                                    <step action="else" uuid="{4de0882e-7741-4f44-af35-f776b5688887}" object=" " >
+                                                        <parameter></parameter>
+                                                        <response/>
+                                                        <subSteps>
+                                                            <step action="eval" uuid="{e413cde1-b1e2-43f6-8319-6c6dd2c3af74}" object=" " >
+                                                                <parameter> $i=0; $n=$job[$pm["itr"].toInt()].toInt(); $opt=$job[$pm["con"].toInt()].trimmed(); $cfg=$job[$pm["cfg"].toInt()].trimmed()</parameter>
+                                                                <response/>
+                                                            </step>
+                                                            <step action="call" uuid="{d92796c5-1c3d-4278-a0cf-217addeccc3a}" object=" " >
+                                                                <parameter>-function testjob_scheduler::schLog -outStr $tcn with configuration $cfg shall be executed $n times</parameter>
+                                                                <response/>
+                                                            </step>
+                                                            <step action="repeat" uuid="{2293b6b6-6a23-42b4-8a04-f856876dea39}" object=" " >
+                                                                <parameter>$n</parameter>
+                                                                <response/>
+                                                                <subSteps>
+                                                                    <step action="eval" uuid="{66cc93a6-be07-4bc4-8611-b7e315268478}" object=" " >
+                                                                        <parameter>$i++</parameter>
+                                                                        <response/>
+                                                                    </step>
+                                                                    <step action="call" uuid="{1a4809d6-bb19-4dfd-bb9d-4052a3b70003}" object=" " >
+                                                                        <parameter>-function testjob_scheduler::schLog -outStr " "</parameter>
+                                                                        <response/>
+                                                                    </step>
+                                                                    <step action="call" uuid="{8e073b87-d577-4cbe-b22c-11f733d2f857}" object=" " >
+                                                                        <parameter>-function testjob_scheduler::schLog -outStr Previous result is $preRes and control option is $opt</parameter>
+                                                                        <response/>
+                                                                    </step>
+                                                                    <step action="if" uuid="{f6154ec6-676c-40ae-81c4-66bdf9175731}" object=" " >
+                                                                        <parameter>$preRes=="FAIL" &amp;&amp; $opt=="terminateOnFail"</parameter>
+                                                                        <response/>
+                                                                        <subSteps>
+                                                                            <step action="call" uuid="{03be77ff-015d-46a6-a4ff-b5846d1b5f47}" object=" " >
+                                                                                <parameter>-function testjob_scheduler::schLog -outStr " "</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                            <step action="call" uuid="{66cd72b2-f235-4679-a319-3f981f566984}" object=" " >
+                                                                                <parameter>-function testjob_scheduler::schLog -outStr Job result is $jobRes, terminated.</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                            <step action="call" uuid="{577d60cf-f70b-42b8-b9eb-66af0eb9a195}" object=" " >
+                                                                                <parameter>-function  testjob_scheduler::tsCmd -cmd StopSession</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                            <step action="setResponse" uuid="{48358fa1-9e77-4e8b-a951-1f167271d2c6}" object=" " >
+                                                                                <parameter>$jobRes</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                            <step action="failCase" uuid="{8270bdf8-5768-45bf-9234-91b15cebb65b}" object=" " >
+                                                                                <parameter></parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                        </subSteps>
+                                                                    </step>
+                                                                    <step action="elseif" uuid="{1a6c6a31-f85e-496f-b396-c77fae311e21}" object=" " >
+                                                                        <parameter>$preRes=="" || $opt=="continue" || ($preRes=="PASS" &amp;&amp; $opt!="skipOnPass") || ($preRes=="FAIL" &amp;&amp; $opt!="skipOnFail")</parameter>
+                                                                        <response/>
+                                                                        <subSteps>
+                                                                            <step action="call" uuid="{d274194f-a03e-4a38-a643-c88894cdc885}" object=" " >
+                                                                                <parameter>-function testjob_scheduler::schLog -outStr Run $i of $n of $tcn with confguration $cfg starts</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                            <step action="eval" uuid="{7210bae7-a6a7-41b0-9e9a-98351e3289fd}" object=" " >
+                                                                                <parameter>$str=$tcn+"_"+$i</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                            <step action="call" uuid="{2d788c16-5dc1-4b0b-a924-e18fde0f31dd}" object=" " >
+                                                                                <parameter>-function  testjob_scheduler::tsCmd -cmd StartTrace -par $str</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                            <step action="run" uuid="{26ecda42-dbb8-49e6-998d-6a4dd70cc3f8}" object=" " >
+                                                                                <parameter>$tcn -eNodeB_Name $pm["enb"] -tcConfig $cfg</parameter>
+                                                                                <response/>
+                                                                                <subSteps>
+                                                                                    <step action="ifPassed" uuid="{48dde8a0-4a0e-4e24-b9bf-43d85d30212b}" object=" " >
+                                                                                        <parameter></parameter>
+                                                                                        <response/>
+                                                                                        <subSteps>
+                                                                                            <step action="eval" uuid="{b21693c2-349c-4b10-811d-47f6929b9e42}" object=" " >
+                                                                                                <parameter>$preRes="PASS"</parameter>
+                                                                                                <response/>
+                                                                                            </step>
+                                                                                        </subSteps>
+                                                                                    </step>
+                                                                                    <step action="else" uuid="{2ba3f01b-3dd5-42fc-87ad-5389ed1dfc02}" object=" " >
+                                                                                        <parameter></parameter>
+                                                                                        <response/>
+                                                                                        <subSteps>
+                                                                                            <step action="eval" uuid="{3149a2d5-a42f-42e2-8b54-67d3ceab1a96}" object=" " >
+                                                                                                <parameter>$preRes="FAIL"; $jobRes="FAIL"; $failResCount++</parameter>
+                                                                                                <response/>
+                                                                                            </step>
+                                                                                        </subSteps>
+                                                                                    </step>
+                                                                                </subSteps>
+                                                                            </step>
+                                                                            <step action="call" uuid="{9ba67c1d-8303-4e14-9059-52ae69d0978b}" object=" " >
+                                                                                <parameter>-function  testjob_scheduler::tsCmd -cmd StopTrace -par $preRes</parameter>
+                                                                                <response/>
+                                                                            </step>
+                                                                        </subSteps>
+                                                                    </step>
+                                                                </subSteps>
+                                                            </step>
+                                                        </subSteps>
+                                                    </step>
+                                                </subSteps>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                    <step action="call" uuid="{1aaf234f-2256-4bc3-9efd-aa85f3aab5b5}" object=" " >
+                                        <parameter>-function  testjob_scheduler::tsCmd -cmd StopSession</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="if" uuid="{7f2166b9-e35d-4d95-b051-047f9f59439b}" object=" " >
+                                <parameter>$failResCount</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{c4b3497f-19c3-4fae-ad7a-50903281ad8d}" object=" " >
+                                        <parameter>$jobRes="FAIL"</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="comment" uuid="{a08701dd-1778-47b1-8d2c-7080fe506c1c}" object=" " >
+                        <parameter>---------- End of Schedule ----------</parameter>
+                        <response/>
+                    </step>
+                    <step action="call" uuid="{b304d900-ef1e-4806-9b53-a29dc762928e}" object=" " >
+                        <parameter>-function  testjob_scheduler::tsCmd -cmd TerminateTraceServer</parameter>
+                        <response/>
+                    </step>
+                </subSteps>
+            </step>
+            <step action="comment" uuid="{a4ffeaef-d2b2-4da4-b6aa-7477ed7f3f5c}" object=" " >
+                <parameter>-----Post Testcase scheduler ---------------------</parameter>
+                <response/>
+                <subSteps>
+                    <step action="comment" uuid="{6d2ff17c-1175-44af-a839-1cd3f7320911}" object=" " >
+                        <parameter>----- write summary -----</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="getGlobalVariable" uuid="{c4c1e724-a8d4-4eb5-b8a0-bc834f611e1b}" object=" " >
+                                <parameter>tc_result_file $result</parameter>
+                                <response/>
+                            </step>
+                            <step action="call" uuid="{d2f06d95-dc5b-4337-b824-56ee54c5f2df}" object=" " >
+                                <parameter>-function lib/libQCUpdate::getResultSummary -rpath $result</parameter>
+                                <response/>
+                            </step>
+                            <step action="getResponse" uuid="{e43c2c2e-0b69-47d8-9466-37a4b4c3baa4}" object=" " >
+                                <parameter>$summaryString</parameter>
+                                <response/>
+                            </step>
+                            <step action="call" uuid="{19d57d56-d009-4283-93e8-27e9ebeab5be}" object=" " >
+                                <parameter>-function testjob_scheduler::schLog -outStr Job summary file is $jobCfg["summary"]</parameter>
+                                <response/>
+                            </step>
+                            <step action="call" uuid="{c388715d-6de2-46da-b0bf-49d33aefa728}" object=" " >
+                                <parameter>-function testjob_scheduler::schLog -outStr Job summary is $summaryString</parameter>
+                                <response/>
+                            </step>
+                            <step action="call" uuid="{2ee4de50-b5a4-4207-a26b-3f8cabd35a78}" object=" " >
+                                <parameter>-function testjob_scheduler::schLog -outStr " "</parameter>
+                                <response/>
+                            </step>
+                            <step action="comment" uuid="{eb2fc2fd-9419-4401-8d89-cf9852d21f52}" object=" " >
+                                <parameter>---- write summary file ----</parameter>
+                                <response/>
+                            </step>
+                            <step action="call" uuid="{d1b46d2e-afa9-4f59-af77-d4afc83d32e9}" object=" " >
+                                <parameter>-function testjob_scheduler::schLog -outStr Job result is $jobRes</parameter>
+                                <response/>
+                            </step>
+                            <step action="call" uuid="{239343d4-0edf-422f-9b19-cc4736914a9d}" object=" " >
+                                <parameter>-function testjob_scheduler::jobLog -outStr Job summary is $summaryString</parameter>
+                                <response/>
+                            </step>
+                            <step action="if" uuid="{e1ba4f37-3e99-4556-9588-b5c3af7346ce}" object=" " >
+                                <parameter>$jobCfg["summary"] != "ignore"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="printToFile" uuid="{7898e0aa-08a3-4a45-85f2-849d97f88c4a}" object=" " >
+                                        <parameter>$jobCfg["summary"] $summaryString</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="comment" uuid="{4b7075c1-8716-49a3-be66-a693e307b649}" object=" " >
+                                        <parameter>---- copy result file ----</parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="call" uuid="{1d09734a-5e5a-4d9d-97ec-b2910033ff22}" object=" " >
+                                                <parameter>-function lib/libUtility_General::findpathString -fullStr $jobCfg["summary"]</parameter>
+                                                <response/>
+                                            </step>
+                                            <step action="getResponse" uuid="{532b3317-5bde-4930-9b24-e412668558e1}" object=" " >
+                                                <parameter>$answer</parameter>
+                                                <response/>
+                                            </step>
+                                            <step action="eval" uuid="{000414af-c263-433e-9a7a-f0ce9a5acf92}" object=" " >
+                                                <parameter>$answer = $answer + "result.txt"</parameter>
+                                                <response/>
+                                            </step>
+                                            <step action="getGlobalVariable" uuid="{df3bdb3a-372c-4f2e-b9d4-2f613fada06f}" object=" " >
+                                                <parameter>tc_result_file $logfile</parameter>
+                                                <response/>
+                                            </step>
+                                            <step action="call" uuid="{eebf0e47-9341-45b2-ac50-804681acd236}" object=" " >
+                                                <parameter>-function lib/libUtility_General::copyFile -src $logfile  -dst $answer</parameter>
+                                                <response/>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="if" uuid="{469514ba-a3a0-43ef-9808-20425549c9f1}" object=" " >
+                        <parameter>$jobRes=="FAIL"</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="failCase" uuid="{f47b4512-d7da-4c23-80a7-fa31015a4b55}" object=" " >
+                                <parameter></parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                </subSteps>
+            </step>
+        </steps>
+    </procedure>
+    <procedure desc="" type="private" name="jobLog" >
+        <arguments>
+            <arg attribute="mandator" type="string" value="" name="outStr" />
+        </arguments>
+        <variables>
+            <var type="string" value="" index="" name="format" />
+            <var type="string" value="" index="" name="logfile" />
+            <var type="TMap" value="" index="" name="tcProperty" />
+        </variables>
+        <respmappingList/>
+        <steps>
+            <step action="getTcProperty" uuid="{08d0d589-d221-4235-8ae8-91d64487c657}" object=" " >
+                <parameter>$tcProperty</parameter>
+                <response/>
+            </step>
+            <step action="getGlobalVariable" uuid="{101cb4f7-2fa8-4641-9491-cd25324f6935}" object=" " >
+                <parameter>tc_result_file $logfile</parameter>
+                <response/>
+            </step>
+            <step action="eval" uuid="{28c81a53-8254-4ae0-860a-48a6dac3601e}" object=" " >
+                <parameter>$format="##%1\t\t%2"; $outStr=$format.arg($tcProperty["tcname"],$outStr)</parameter>
+                <response/>
+            </step>
+            <step action="printToFile" uuid="{403c435b-af4e-45a1-92d7-9d60371a477a}" object=" " >
+                <parameter>$logfile $outStr</parameter>
+                <response/>
+            </step>
+        </steps>
+    </procedure>
+    <procedure desc="" type="private" name="schLog" >
+        <arguments>
+            <arg attribute="mandator" type="string" value="" name="outStr" />
+        </arguments>
+        <variables>
+            <var type="string" value="" index="" name="result" />
+        </variables>
+        <respmappingList/>
+        <steps>
+            <step action="getGlobalVariable" uuid="{7b2e682e-87fe-426b-b311-9ae6894cbc77}" object=" " >
+                <parameter>g_schLogfile $result</parameter>
+                <response/>
+            </step>
+            <step action="setGlobalVariable" uuid="{1aebb140-b1e5-4bca-82b2-558d566243c3}" object=" " >
+                <parameter>g_logfileName $result</parameter>
+                <response/>
+            </step>
+            <step action="call" uuid="{2f1aee67-7dcd-42a9-838a-3061c42cf97e}" object=" " >
+                <parameter>-function lib/libUtility_General::print_log -Grade INFO -LogInformation $outStr</parameter>
+                <response/>
+            </step>
+            <step action="getResponse" uuid="{c520d4b0-c42b-4f72-97d0-4742a76ed6c9}" object=" " >
+                <parameter>$result</parameter>
+                <response/>
+            </step>
+            <step action="ifFailed" uuid="{0364e4e4-49d9-4f3f-9452-f4c9ed19935c}" object=" " >
+                <parameter></parameter>
+                <response/>
+                <subSteps>
+                    <step action="print" uuid="{b3b202c8-ec27-4da3-8bde-3371b331a4ec}" object=" " >
+                        <parameter>Failed to print the log</parameter>
+                        <response/>
+                    </step>
+                </subSteps>
+            </step>
+        </steps>
+    </procedure>
+    <procedure desc="" type="private" name="tsCmd" >
+        <arguments>
+            <arg attribute="mandatory" type="string" value="" index="1" name="cmd" />
+            <arg desc="" attribute="optional" available="" type="string" value="" index="2" name="par" />
+            <arg attribute="optional" type="string" value="" index="3" name="cfg" />
+        </arguments>
+        <variables>
+            <var type="Socket" value="" index="" name="tsc" />
+            <var type="SSH" value="" index="" name="tss" />
+            <var type="string" value="" index="" name="ts_sock" />
+            <var type="TDateTime" value="" index="" name="dtc" />
+            <var type="HOST" value="" index="" name="ts_host" />
+            <var type="TMap" value="" index="" name="jobCfg" />
+            <var type="int" index="8" name="ts_mode" />
+            <var type="string" index="8" name="str" />
+        </variables>
+        <respmappingList>
+            <rm rmFile="defaultResponseMapping.torm" object="tsc" />
+        </respmappingList>
+        <steps>
+            <step action="if" uuid="{21682734-e6f3-494a-802c-c36f496bf21e}" object=" " >
+                <parameter>$cmd=="StartTraceServer"</parameter>
+                <response/>
+                <subSteps>
+                    <step action="if" uuid="{58aa517d-77f1-4df9-afff-48b26946f218}" object=" " >
+                        <parameter>$cfg=="traceFailedTC"</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="eval" uuid="{1cddf566-856a-4db6-84a0-562c4ffe8c21}" object=" " >
+                                <parameter>$ts_mode=1</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="elseif" uuid="{452d80f5-fb68-4224-b9b4-a2803479cc86}" object=" " >
+                        <parameter>$cfg=="traceAll"</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="eval" uuid="{9c0293e1-967d-43a7-99d5-c181d5186b48}" object=" " >
+                                <parameter>$ts_mode=2</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="else" uuid="{eb1226ff-5488-441c-9ed0-7e70157b6953}" object=" " >
+                        <parameter></parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="eval" uuid="{f7661b3c-39f1-49c9-898f-0bd23101e5fa}" object=" " >
+                                <parameter>$ts_mode=0</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="eval" uuid="{d1e5e690-cca0-4a46-a968-46743bc66aa0}" object=" " >
+                        <parameter>$str="HOST("+$par+")"</parameter>
+                        <response/>
+                    </step>
+                    <step action="convertStrToNE" uuid="{1bfb5f83-09d4-4bce-85df-d94c7f47bf24}" object=" " >
+                        <parameter>$str $ts_host</parameter>
+                        <response/>
+                    </step>
+                    <step action="if" uuid="{f4047dcd-e683-4022-aa24-f397ef06fac8}" object=" " >
+                        <parameter>$ts_mode!=0 &amp;&amp; $ts_host.general.ip!=""</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="open" uuid="{2339dfce-7024-43d2-a86d-be357b1ccb06}" object="tss" >
+                                <parameter>$ts_host -reuse gtss</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="ifFailed" uuid="{4afa16eb-d1df-4133-a29e-234b7631c5b3}" object=" " >
+                                        <parameter></parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="failCase" uuid="{4b6c5b3b-671b-4ac2-984e-ba534537a53a}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="command" uuid="{f96d592d-a18e-413d-b739-d42021882153}" object="tss" >
+                                <parameter>export DISPLAY=pc</parameter>
+                                <response/>
+                            </step>
+                            <step action="command" uuid="{55f20a13-c4ec-47e0-8140-717746c14022}" object="tss" >
+                                <parameter>ps -ef|grep Trace</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="assertEqual" uuid="{fcac4b9d-c0a9-417c-8ef0-39d972205e2b}" object=" " >
+                                        <parameter>-regex Trace([_A-Za-z]+), -target _Server, -save </parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="ifPassed" uuid="{ca9cfd08-7091-460a-b61a-abd45f3ddfd9}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                                <subSteps>
+                                                    <step action="failCase" uuid="{b52bfc53-ef57-4d0e-937e-1bf50fc757a8}" object=" " >
+                                                        <parameter></parameter>
+                                                        <response/>
+                                                    </step>
+                                                </subSteps>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="command" uuid="{d65d332b-a1ab-4679-8629-f5af162c585c}" object="tss" >
+                                <parameter>Trace_Server e</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="assertEqual" uuid="{117b81f2-0de4-45fb-a1e7-94fb5dceafdc}" object=" " >
+                                        <parameter>-regex =([0-9.]+), -target $ts_host.general.ip, -save </parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="ifFailed" uuid="{6a791358-c403-4175-8e6a-93920673d231}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                                <subSteps>
+                                                    <step action="failCase" uuid="{c996843f-19e0-4e5e-a68e-7826ca5a32b4}" object=" " >
+                                                        <parameter></parameter>
+                                                        <response/>
+                                                    </step>
+                                                </subSteps>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="eval" uuid="{d60ac1b5-6876-4599-b041-4b99cacac956}" object=" " >
+                                <parameter>$ts_sock="socket://"+$ts_host.general.ip+":8888 -reuse gtsc"</parameter>
+                                <response/>
+                            </step>
+                            <step action="setGlobalVariable" uuid="{9a961233-b01f-46b5-9c8b-1e7876d579cd}" object=" " >
+                                <parameter>g_ts_sock $ts_sock</parameter>
+                                <response/>
+                            </step>
+                            <step action="call" uuid="{7531ced3-2bbe-4d02-b3fa-42ec19ea78b6}" object=" " >
+                                <parameter>-function testjob_scheduler::schLog -outStr traceServer started</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="else" uuid="{f957ed7f-1be2-48a7-ad01-dcd66d4a45fd}" object=" " >
+                        <parameter></parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="eval" uuid="{2cb455a7-84c9-4ebd-b0ed-76f49078df9b}" object=" " >
+                                <parameter>$ts_mode=0</parameter>
+                                <response/>
+                            </step>
+                        </subSteps>
+                    </step>
+                    <step action="setGlobalVariable" uuid="{3d78bc67-5bab-4342-83aa-b0fc5f57486f}" object=" " >
+                        <parameter>g_ts_mode $ts_mode</parameter>
+                        <response/>
+                    </step>
+                </subSteps>
+            </step>
+            <step action="else" uuid="{83a78283-a755-4132-88c0-7ae8cb254940}" object=" " >
+                <parameter></parameter>
+                <response/>
+                <subSteps>
+                    <step action="getGlobalVariable" uuid="{8394cea2-0c39-4727-88c7-405ce8fe6bc6}" object=" " >
+                        <parameter>g_ts_mode $ts_mode</parameter>
+                        <response/>
+                    </step>
+                    <step action="if" uuid="{d46b99df-bac5-4735-8d2e-a2e6f148f032}" object=" " >
+                        <parameter>$ts_mode!=0</parameter>
+                        <response/>
+                        <subSteps>
+                            <step action="if" uuid="{32007478-f21c-4808-8fc3-1442fd15f359}" object=" " >
+                                <parameter>$cmd=="StartSession" || $cmd=="StartTrace"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="eval" uuid="{f30ee64e-9d6e-40de-8a34-50afdb969dc2}" object=" " >
+                                        <parameter>$par+=$dtc.currentDateTime().toString("_yyyyMMdd_hhmmss")</parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="if" uuid="{3e3f05d1-69a6-4b97-bd52-635f2842a93b}" object=" " >
+                                                <parameter>$cmd=="StartSession"</parameter>
+                                                <response/>
+                                                <subSteps>
+                                                    <step action="call" uuid="{6de90bab-bfa2-4ebc-a67d-22daf9ced7a4}" object=" " >
+                                                        <parameter>-function testjob_scheduler::schLog -outStr traceServer session started</parameter>
+                                                        <response/>
+                                                    </step>
+                                                </subSteps>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="getGlobalVariable" uuid="{0c9f15a7-fb38-46b7-b464-80f7f1ff2307}" object=" " >
+                                <parameter>g_ts_sock $ts_sock</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="ifFailed" uuid="{29946776-1224-48c5-a753-bfba2011bd0b}" object=" " >
+                                        <parameter></parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="failCase" uuid="{281716c9-d089-46b1-b106-1a6b2f5aec6f}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="open" uuid="{9137d43b-07f3-4c8b-b4ac-d8e73307fd19}" object="tsc" >
+                                <parameter>$ts_sock</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="ifFailed" uuid="{cd8340fb-c1fb-4b7b-9483-d7f405204858}" object=" " >
+                                        <parameter></parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="failCase" uuid="{4e1a8bb6-5029-4e1e-a1a0-a139ad6b06ae}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="if" uuid="{8de2d38a-a5fb-455d-b731-af7101eecaf9}" object=" " >
+                                <parameter>$cmd=="StopTrace"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="if" uuid="{4c339615-dbea-47f0-bdbc-4ee459d6ff35}" object=" " >
+                                        <parameter> $ts_mode==2 || ($ts_mode==1 &amp;&amp; $par=="FAIL")</parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="eval" uuid="{434cd087-62ef-40b5-9b05-11d8aa6d217b}" object=" " >
+                                                <parameter>$par="keep"</parameter>
+                                                <response/>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                    <step action="else" uuid="{914e742d-ba45-4cac-939c-58610a7a9359}" object=" " >
+                                        <parameter></parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="eval" uuid="{2d445a78-a041-453a-ac25-1c9a44cbeed6}" object=" " >
+                                                <parameter>$par="drop"</parameter>
+                                                <response/>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="command" uuid="{75278918-dc9f-4d4b-8c7c-110a81e5853f}" object="tsc" >
+                                <parameter>$cmd $par $cfg</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="assertEqual" uuid="{2fd0df84-498c-4123-a264-072d612d2ab2}" object=" " >
+                                        <parameter>-regex SERVER\s([A-Za-z]+), -target OK, -save </parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="ifFailed" uuid="{a1cf3fc2-f008-4848-bc1f-9d779b89ce88}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                                <subSteps>
+                                                    <step action="failCase" uuid="{d08ec5a7-5f05-44ea-a0a3-c026397cdcfb}" object=" " >
+                                                        <parameter></parameter>
+                                                        <response/>
+                                                    </step>
+                                                </subSteps>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="if" uuid="{96bb722b-cdcc-4a5e-a0d4-edc52eadc833}" object=" " >
+                                <parameter>$cmd=="StopSession"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="close" uuid="{892edb71-d514-4fa9-82d2-c5a8df0013f2}" object="tsc" >
+                                        <parameter></parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="ifFailed" uuid="{737a44f0-881e-493e-a0fd-02a2af00eb11}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                                <subSteps>
+                                                    <step action="failCase" uuid="{dd765286-3fef-491e-ae1b-9f9f1eeca3f2}" object=" " >
+                                                        <parameter></parameter>
+                                                        <response/>
+                                                    </step>
+                                                </subSteps>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                    <step action="call" uuid="{c70b5066-c804-49cf-95c6-74380e207a83}" object=" " >
+                                        <parameter>-function testjob_scheduler::schLog -outStr " "</parameter>
+                                        <response/>
+                                    </step>
+                                    <step action="call" uuid="{605ca33d-51d3-438a-9d0a-bbb8d9ace9b0}" object=" " >
+                                        <parameter>-function testjob_scheduler::schLog -outStr traceServer session stopped</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                            <step action="if" uuid="{e347f500-bcd3-4a0b-9434-31e8f06fc40f}" object=" " >
+                                <parameter>$cmd=="TerminateTraceServer"</parameter>
+                                <response/>
+                                <subSteps>
+                                    <step action="close" uuid="{09ded3ed-bfac-4b43-bd6f-336032c93078}" object="tss" >
+                                        <parameter></parameter>
+                                        <response/>
+                                        <subSteps>
+                                            <step action="ifFailed" uuid="{0bfe61f9-14f3-45a0-8662-86274d413af1}" object=" " >
+                                                <parameter></parameter>
+                                                <response/>
+                                                <subSteps>
+                                                    <step action="failCase" uuid="{546b783b-d711-49db-ae53-5933cd5489db}" object=" " >
+                                                        <parameter></parameter>
+                                                        <response/>
+                                                    </step>
+                                                </subSteps>
+                                            </step>
+                                        </subSteps>
+                                    </step>
+                                    <step action="call" uuid="{2af9cf7e-8b8a-4163-8d9e-f3a21ce21076}" object=" " >
+                                        <parameter>-function testjob_scheduler::schLog -outStr traceServer terminated</parameter>
+                                        <response/>
+                                    </step>
+                                </subSteps>
+                            </step>
+                        </subSteps>
+                    </step>
+                </subSteps>
+            </step>
+        </steps>
+    </procedure>
+</testCase>
