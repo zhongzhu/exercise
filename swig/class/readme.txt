@@ -1,0 +1,2 @@
+D:\GitHub\exercise\swig>D:\swigwin-2.0.9\swig -python -c++ example.i
+D:\GitHub\exercise\swig>g++ -shared -o _example.pyd example.cpp example_wrap.cxx -I"D:\Python27\include" -L"D:\Python27\libs" -lpython27
