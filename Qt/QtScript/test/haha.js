@@ -1,4 +1,4 @@
 h = new Haha();
 result = "";
-h.sayHello("henry", result);
+h.sayHello("zhongzhu", result);
 result;
