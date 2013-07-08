@@ -5,7 +5,12 @@ Haha::Haha(QObject *parent) :
 {
 }
 
-void Haha::sayHello(const QString &name, QString &result)
+int Haha::add(QStringList &l)
 {
-    result = "Hello " + name;
+    return 1 + l.at(0).toInt();
+}
+
+int Haha::add2(const QStringList &l)
+{    
+    return 1 + l.at(0).toInt();
 }

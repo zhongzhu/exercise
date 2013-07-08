@@ -14,17 +14,9 @@ int main(int argc, char *argv[])
     QScriptValue HahaClass = engine.scriptValueFromQMetaObject<Haha>();
     engine.globalObject().setProperty("Haha", HahaClass);
 
-    QString fileName = "haha.js";
-    QFile scriptFile(fileName);
-    if (!scriptFile.open(QIODevice::ReadOnly)) {
-        return -1;
-    }
-    QTextStream b(&scriptFile);
-    QString contents = b.readAll();
-    scriptFile.close();
-
-    QScriptValue result = engine.evaluate(contents, fileName);
-    qDebug()<<result.toString();
+    engine.evaluate("var h = new Haha()");
+    qDebug()<<engine.evaluate("h.add(['3'])").toString();
+    qDebug()<<engine.evaluate("h.add2(['3'])").toString();
 
     return a.exec();
 }

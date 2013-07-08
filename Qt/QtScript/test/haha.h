@@ -2,6 +2,7 @@
 #define HAHA_H
 
 #include <QObject>
+#include <QStringList>
 
 class Haha : public QObject
 {
@@ -11,7 +12,8 @@ public:
     explicit Haha(QObject *parent = 0);
        
 public slots:
-    void sayHello(const QString &name, QString &result);
+    int add(QStringList &l);
+    int add2(const QStringList &l);
 };
 
 #endif // HAHA_H
