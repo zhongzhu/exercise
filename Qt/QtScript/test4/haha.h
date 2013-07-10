@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QStringList>
 
-//Q_DECLARE_METATYPE(QStringList *)
-
 class Haha : public QObject
 {
     Q_OBJECT
