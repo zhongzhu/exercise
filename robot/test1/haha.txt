@@ -1,0 +1,3 @@
+*** Keywords ***
+say hello to ${name}
+    Log    hello ${name}

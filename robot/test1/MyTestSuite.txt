@@ -1,0 +1,12 @@
+*** Settings ***
+Resource          haha.txt
+
+*** Variables ***
+${myname}         zhong zhu    # this is my name
+@{mynames}        henry    zhu    zhong zhu    henry zhong
+
+*** Test Cases ***
+print a message
+    say hello to ${myname}
+
+*** Keywords ***
