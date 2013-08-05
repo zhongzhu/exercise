@@ -8,6 +8,10 @@
     <field name="date" type="string" indexed="true" stored="true" required="true" />
     <field name="message" type="string" indexed="true" stored="true" required="true" />
     <field name="priority" type="int" indexed="true" stored="true" />    
+    <field name="text" type="text_general" multiValued="true" indexed="true" stored="false" />
+    <copyField source="message" dest="text" />
+    <copyField source="subject" dest="text" />
+    <copyField source="addr_*" dest="text" />    
   </fields>
   <uniqueKey>id</uniqueKey>
   <types>
@@ -16,6 +20,12 @@
     <fieldType name="email" class="solr.TextField">
       <analyzer>
         <tokenizer class="solr.UAX29URLEmailTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+    </fieldType>    
+    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>    
