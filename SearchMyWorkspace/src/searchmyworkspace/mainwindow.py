@@ -1,0 +1,36 @@
+from PySide import QtCore
+from PySide import QtGui
+from searchmyworkspace_ui import Ui_MainWindow
+
+class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+       
+    def __init__(self, parent = None):
+        super(MainWindow, self).__init__(parent)
+                
+        self.setupUi(self)
+
+        self.setWindowTitle("Search My Workspace")
+
+        # Completer used to set my workspace
+        completer = QtGui.QCompleter(self)
+        fsmodel = QtGui.QFileSystemModel(self)
+        fsmodel.setRootPath("fsmodel")
+        completer.setModel(fsmodel)
+        self.lineEdit_workspace.setCompleter(completer)
+
+        # signal slots
+        self.createConnections()
+                
+
+    ''' connect signal/slot pairs '''
+    def createConnections(self):
+    	self.pushButton_search.clicked.connect(self.search)
+    	self.pushButton_browser.clicked.connect(self.selectWorkspace)
+
+    def search(self):
+    	QtGui.QMessageBox.information(self, "info", "haha")
+
+    def selectWorkspace(self):
+    	wsPath = QtGui.QFileDialog.getExistingDirectory(self, "Select your workspace", "D:\\EasyTest", QtGui.QFileDialog.ShowDirsOnly)
+    	QtGui.QMessageBox.information(self, "info", wsPath)
+    	self.lineEdit_workspace.setText(wsPath)
