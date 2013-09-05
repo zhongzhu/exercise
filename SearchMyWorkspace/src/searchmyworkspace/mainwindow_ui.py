@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'searchmyworkspace.ui'
+# Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Sep 04 15:33:24 2013
+# Created: Thu Sep 05 11:25:18 2013
 #      by: pyside-uic 0.2.15 running on PySide 1.2.1
 #
 # WARNING! All changes made in this file will be lost!

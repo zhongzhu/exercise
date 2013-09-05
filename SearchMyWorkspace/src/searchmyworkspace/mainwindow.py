@@ -1,6 +1,6 @@
 from PySide import QtCore
 from PySide import QtGui
-from searchmyworkspace_ui import Ui_MainWindow
+from mainwindow_ui import Ui_MainWindow
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
        
