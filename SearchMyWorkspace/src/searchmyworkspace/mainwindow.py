@@ -14,7 +14,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Completer used to set my workspace
         completer = QtGui.QCompleter(self)
         fsmodel = QtGui.QFileSystemModel(self)
-        fsmodel.setRootPath("fsmodel")
+        fsmodel.setRootPath("")
         completer.setModel(fsmodel)
         self.lineEdit_workspace.setCompleter(completer)
 
