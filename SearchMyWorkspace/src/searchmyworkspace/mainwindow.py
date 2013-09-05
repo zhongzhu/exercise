@@ -1,6 +1,8 @@
 from PySide import QtCore
 from PySide import QtGui
 from mainwindow_ui import Ui_MainWindow
+from resultsmodel import *
+from resultsdelegate import *
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
        
@@ -18,9 +20,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         completer.setModel(fsmodel)
         self.lineEdit_workspace.setCompleter(completer)
 
+        # List to display search results
+        self.searchResultsModel = SearchResultsModel()
+        self.listView_result.setModel(self.searchResultsModel)
+
+        searchResultsDelegate = SearchResultsDelegate(self.listView_result)
+        self.listView_result.setItemDelegate(searchResultsDelegate);
+
         # signal slots
-        self.createConnections()
-                
+        self.createConnections()                
 
     ''' connect signal/slot pairs '''
     def createConnections(self):
