@@ -1,7 +1,7 @@
 from PySide import QtCore
 from PySide import QtGui
 
-mydata = ["haha", "hihi"]
+mydata = ["haha", "hihi", "jack", "no", "but", "hoho", "henry", "haha", "hihi", "jack", "no", "but", "hoho", "henry","haha", "hihi", "jack", "no", "but", "hoho", "henry"]
 
 class SearchResultsModel(QtCore.QAbstractListModel):
     def __init__(self, parent=None):

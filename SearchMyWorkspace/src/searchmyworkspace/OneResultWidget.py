@@ -8,3 +8,6 @@ class OneResultWidget(QtGui.QWidget, Ui_Form):
         super(OneResultWidget, self).__init__(parent)
                 
         self.setupUi(self)
+
+    def setPic(self, pic):
+    	self.label_pic.setText(pic)
