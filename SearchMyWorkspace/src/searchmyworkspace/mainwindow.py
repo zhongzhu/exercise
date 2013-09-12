@@ -1,8 +1,8 @@
 from PySide import QtCore
 from PySide import QtGui
 from mainwindow_ui import Ui_MainWindow
-from resultsmodel import *
-from resultsdelegate import *
+from resultsmodel import SearchResultsModel
+from resultsdelegate import SearchResultsDelegate
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
        

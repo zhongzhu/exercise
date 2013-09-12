@@ -1,16 +1,23 @@
 from PySide.QtCore import *
 from PySide.QtGui import *
-from OneResultWidget import OneResultWidget
+from tccodehighlighter import Highlighter
+
+class MyItemSize(object):
+    # size for displayed items
+    MarginSize = 8
+    PreviewWindowHeight = 100    
+    TitleHeight = 20    
 
 class SearchResultsDelegate(QStyledItemDelegate):
 
     def __init__(self, parent=None):
         super(SearchResultsDelegate, self).__init__(parent)
-        self.sampleOneResultWidget = OneResultWidget()
+        #self.sampleOneResultWidget = OneResultWidget()
 
     def sizeHint(self, option, index):
         """ Returns the size needed to display the item in a QSize object. """
-        return self.sampleOneResultWidget.sizeHint()
+        return QSize(option.rect.width(),  MyItemSize.MarginSize * 2 + MyItemSize.PreviewWindowHeight + MyItemSize.TitleHeight)
+        # return self.sampleOneResultWidget.sizeHint()
         # if index.column() == 3:
         #     starRating = StarRating(index.data())
         #     return starRating.sizeHint()
@@ -18,26 +25,57 @@ class SearchResultsDelegate(QStyledItemDelegate):
         #     return QStyledItemDelegate.sizeHint(self, option, index)        
 
     def paint(self, painter, option, index):
-        # text = "hello: %s" % index.model().data(index, Qt.DisplayRole)
-        # painter.drawText(option.rect, Qt.AlignCenter, text)
+        """
+        *** ITEM LAYOUT
+        +----------------------------------------------------------+
+        |                          margin                          |
+        +-+------------------------------------------------------+-+
+        | |                      tc title                        | |
+        |M|------------------------------------------------------|M|
+        | |                      preview window                  | | M = Margin
+        +-+------------------------------------------------------+-+
+        |                          margin                          |
+        +----------------------------------------------------------+
+        """
+
+        if not index.isValid():
+            pass
+
+        QApplication.style().drawPrimitive(QStyle.PE_PanelItemViewItem, option, painter)
+
+        # tc title
+        titleRect = QRect()
+        titleRect.setX(option.rect.x() + MyItemSize.MarginSize)
+        titleRect.setY(option.rect.y() + MyItemSize.MarginSize)
+        titleRect.setWidth(option.rect.width() - MyItemSize.MarginSize * 2)
+        titleRect.setHeight(MyItemSize.TitleHeight)
+
         painter.save()
-        palette = QPalette(option.palette)
+        f = QFont()
+        f.setBold(True)
+        painter.setFont(f)
 
-        widget = OneResultWidget()
-        widget.setPic("%d" % index.row())        
-        pixmap = QPixmap(widget.size())        
-        widget.render(pixmap)
+        title = "the/path/to/your/testcase/getName.tc"
 
-        widgetRect = QRect(option.rect.x(), option.rect.y(), widget.width(), widget.height())
-        print(option.rect.x(), option.rect.y(), widget.width(), widget.height())
-        painter.drawPixmap(widgetRect, pixmap)
-        # label->setPalette(palette);
-        # label->setFixedSize(qMax(0,option.rect.width()),option.rect.height());
-        # label->setHtml("<body>\n"
-        #                "</style></head><body style=\"font-family:'MS Shell Dlg 2'; font-size:8.5pt; font-weight:400; font-style:normal;\">\n"
-        #                "<img src=\":/image/square.png\"/>" "<span style=\" font-size:8pt;\">" "     "
-        #                + text+ "</body>");
-        # label->setStyleSheet("border-style:none");
-        # paintWidget(painter,option.rect,label);
-        
+        fontMetrics = QFontMetrics(f)
+        painter.drawText(titleRect, Qt.AlignLeft | Qt.AlignTop, fontMetrics.elidedText(title, Qt.ElideRight, titleRect.width()))
         painter.restore()
+
+        # Preview window
+        font = QFont()
+        font.setFamily('Courier')
+        font.setFixedPitch(True)
+        font.setPointSize(10)
+
+        previewWindow = QTextEdit()
+        previewWindow.setFont(font)
+        previewWindow.resize(option.rect.width() - MyItemSize.MarginSize * 2, MyItemSize.PreviewWindowHeight)
+
+        highlighter = Highlighter(previewWindow.document())       
+        previewWindow.setPlainText("print(\"haha\");")
+
+        pixmap = QPixmap(previewWindow.size())        
+        previewWindow.render(pixmap)
+
+        previewWindowRect = QRect(option.rect.x() + MyItemSize.MarginSize, option.rect.y() + MyItemSize.MarginSize + MyItemSize.TitleHeight, previewWindow.width() - MyItemSize.MarginSize * 2, previewWindow.height())
+        painter.drawPixmap(previewWindowRect, pixmap)
