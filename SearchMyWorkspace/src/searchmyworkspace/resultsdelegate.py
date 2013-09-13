@@ -39,9 +39,9 @@ class SearchResultsDelegate(QStyledItemDelegate):
         if not index.isValid():
             pass
 
-        selected = option.state & QStyle.State_Selected
-        if selected:
-            QStyledItemDelegate.paint(self, painter,option,index)
+        # selected = option.state & QStyle.State_Selected
+        # if selected:
+        #     QStyledItemDelegate.paint(self, painter,option,index)
 
         # QApplication.style().drawPrimitive(QStyle.PE_PanelItemViewItem, option, painter)
 
@@ -71,7 +71,7 @@ class SearchResultsDelegate(QStyledItemDelegate):
         descriptionRect.setWidth(option.rect.width() - MyItemSize.MarginSize * 2)
         descriptionRect.setHeight(MyItemSize.DescriptionHeight)
 
-        description = "Type:test case | Author: zhu@haha.com | Date: Sept. 11, 2010"
+        description = "Type: {0} | Author: {1} | Date: {2}".format(index.data(ResultRoles.TypeRole), index.data(ResultRoles.AuthorRole), index.data(ResultRoles.DateRole))
         painter.save()
         descriptionFont = QFont()
         painter.setFont(descriptionFont)    

@@ -1,4 +1,6 @@
 class ResultRoles(object):
-	TitleRole = 100
-	AuthorRole = 101
-	PreviewContentRole = 102
+	TypeRole = 100
+	TitleRole = 101
+	AuthorRole = 102
+	DateRole = 103
+	PreviewContentRole = 104
