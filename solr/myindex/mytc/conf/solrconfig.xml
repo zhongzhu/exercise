@@ -5,11 +5,11 @@
     <httpCaching never304="true" />
   </requestDispatcher>
   <requestHandler name="/select" class="solr.SearchHandler">
-  	<lst name="defaults">
-  		<str name="wt">json</str>
-  		<str name="indent">true</str>
+    <lst name="defaults">
       <str name="df">text</str>
-  	</lst>
+      <str name="wt">json</str>
+      <str name="indent">true</str>
+    </lst>
   </requestHandler>
   <requestHandler name="/update" class="solr.UpdateRequestHandler" />
   <requestHandler name="/admin" class="solr.admin.AdminHandlers" />

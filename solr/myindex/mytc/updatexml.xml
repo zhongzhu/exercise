@@ -2,89 +2,21 @@
   <doc>
     <field name="id">tc001</field>
     <field name="title">put the title here</field>
+    <field name="tcid">tc001</field>    
+    <field name="qcid">qc001</field>
+    <field name="tcname">sanity/tc001</field>
     <field name="author">Henry Zhong</field>
     <field name="created">2011-03-01</field>
+    <field name="tag">sanity</field>
+    <field name="tag">linux</field>
+    <field name="tag">switch</field>
     <field name="purpose">library with general support functions</field>
     <field name="usage">use the call helper to set up the function calls</field>
-    <field name="functions">libUtility_General</field>
-    <field name="functions">setSnmTargetUdpAddress</field> 
-    <field name="functions">setLogfileGlobalVariables</field>   
-    <field name="functions">print_log</field>
-    <field name="contents">Testcase General Information
-TC_ID tc001
-QC_ID qc001
-Title put title here
-Author OAM Team Stuttgart
-Created 2012-04-26
-Tag 
-Purpose - library with general support functions
-Usage use the call helper to set up the function calls
-function:: libUtility_General
-  libUtility_General:description
-    
-  libUtility_General:arguments
-
-  libUtility_General:variables
-
-  libUtility_General:responseMapping
-
-  libUtility_General:steps
-    comment ------------- Get the IP Address to be set -------------
-      comment ------------- Extract config file to retrieve the IP Address -------------
-        getGlobalVariable g_eNodeB_Name $eNodeB_Name</field>    
+    <field name="function">getVersion</field>
+    <field name="function">checkLogin</field> 
+    <field name="function">addUser</field>   
+    <field name="function">delUser</field>
+    <field name="content">Analyse Fieldname / FieldType</field>    
+    <field name="url">https://192.168.1.3/svn/easytest/tc001.tc</field>    
   </doc>
-  <doc>
-    <field name="id">tc002</field>
-    <field name="title">put the title here</field>
-    <field name="author">Jack Like</field>
-    <field name="created">2011-05-01</field>
-    <field name="purpose">Common Mobility Scenario</field>
-    <field name="usage">a template test case for others to copy from</field>
-    <field name="functions">CommonMobilityScenario</field>
-    <field name="functions">haha</field> 
-    <field name="functions">hihi</field>   
-    <field name="functions">hoho</field>
-    <field name="contents">
-    MS_WCDMA UE -argattribute mandatory -argindex 1
-    string TotalPSNumber -argattribute optional -argindex 15
-    CELL MobilitySourceCell -argattribute mandatory -argindex 10
-          ifFailed 
-            failCase Start the 1st call failed.
-        eval $TotalRabNumber--
-        comment *****Check if has 2nd RAB*****</field>    
-  </doc>  
-  <doc>
-    <field name="id">tc003</field>
-    <field name="title">put the title here</field>
-    <field name="author">Henry Zhong</field>
-    <field name="created">2011-05-05</field>
-    <field name="purpose">play golf</field>
-    <field name="usage">show others how to play golf</field>
-    <field name="functions">golf_General</field>
-    <field name="functions">haha</field> 
-    <field name="functions">hihi</field>   
-    <field name="functions">print_log</field>
-    <field name="contents">Testcase General Information
-TC_ID tc001
-QC_ID qc001
-Title put title here
-Author OAM Team Stuttgart
-Created 2012-04-26
-Tag 
-Purpose - library with general support functions
-Usage use the call helper to set up the function calls
-function:: libUtility_General
-  libUtility_General:description
-    
-  libUtility_General:arguments
-
-  libUtility_General:variables
-
-  libUtility_General:responseMapping
-
-  libUtility_General:steps
-    comment ------------- Get the IP Address to be set -------------
-      comment ------------- Extract config file to retrieve the IP Address -------------
-        getGlobalVariable g_eNodeB_Name $eNodeB_Name</field>    
-  </doc>  
 </add>
