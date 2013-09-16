@@ -4,6 +4,8 @@ from mainwindow_ui import Ui_MainWindow
 from resultsmodel import SearchResultsModel
 from facetmodel import FacetModel
 from resultsdelegate import SearchResultsDelegate
+from searcher import Searcher
+import pysolr
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
        
@@ -14,13 +16,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.setWindowTitle("Search My Workspace")
 
-        # Completer used to set my workspace
-        # completer = QtGui.QCompleter(self)
-        # fsmodel = QtGui.QFileSystemModel(self)
-        # fsmodel.setRootPath("")
-        # completer.setModel(fsmodel)
-        # self.lineEdit_workspace.setCompleter(completer)
-
         # List to display search results
         self.searchResultsModel = SearchResultsModel()
         self.listView_result.setModel(self.searchResultsModel)
@@ -30,22 +25,27 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         # Tree to display facets
         self.facetModel = FacetModel()
-        self.facetModel.setSourceModel(self.searchResultsModel)
         self.treeView_facet.setModel(self.facetModel)
+        self.facetModel.modelReset.connect(self.treeView_facet.expandAll)
+
+        # searcher
+        self.searcher = Searcher()
+        self.searcher.searchDone.connect(self.searchDone)
 
         # signal slots
         self.createConnections()                
 
     ''' connect signal/slot pairs '''
     def createConnections(self):
+        self.pushButton_search.clicked.connect(self.searchResultsModel.clearMyModel)
+        self.pushButton_search.clicked.connect(self.facetModel.clearMyModel)
         self.pushButton_search.clicked.connect(self.search)
-        # self.pushButton_browser.clicked.connect(self.selectWorkspace)
 
     def search(self):
         query = self.lineEdit_search.text()
-        self.searchResultsModel.search(query)
+        self.searcher.search(query)
 
-    # def selectWorkspace(self):
-    #     wsPath = QtGui.QFileDialog.getExistingDirectory(self, "Select your workspace", "D:\\EasyTest", QtGui.QFileDialog.ShowDirsOnly)
-    #     QtGui.QMessageBox.information(self, "info", wsPath)
-    #     self.lineEdit_workspace.setText(wsPath)
+    def searchDone(self):
+        self.searchResultsModel.handleSearchResults(self.searcher.getDocs())
+        self.facetModel.handleSearchResults(self.searcher.getFacets())
+        self.label_searchResult.setText('About {0} search results for [{1}]'.format(self.searcher.getHits(), self.searcher.getQuery()))

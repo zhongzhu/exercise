@@ -1,17 +1,43 @@
 import pysolr
+from PySide import QtCore
 
-class Searcher(object):
+class Searcher(QtCore.QObject):
     """ Used to search Solr Index """
-    def __init__(self, query):
+    searchDone = QtCore.Signal()
+
+    def __init__(self):
+        super(Searcher, self).__init__()
+        self.query = ""
+        self.results = None       
+        self.options = {'facet':'true', 'facet.field':['type','ne','tag','author'], 'facet.mincount':'1'} 
+
+    def search(self, query, option = {}):
         self.query = query
-
-    def search(self):
-        # Setup a Solr instance. The timeout is optional.
+        self.results = None
         solr = pysolr.Solr('http://localhost:8983/solr/mytc', timeout=10)
-        results = solr.search(self.query)
+        newOptions = dict(self.options, **option)
 
-        print("Saw {0} result(s).".format(len(results)))
-        for result in results:
-            print(result['title'])
+        self.results = solr.search(self.query, **newOptions)
+        if len(self.results) > 0:
+            self.searchDone.emit()
+
+    def getDocs(self):
+        if self.results:
+            return self.results.docs
+        else:
+            return []     
+
+    def getFacets(self):
+        if self.results:
+            return self.results.facets
+        else:
+            return []                      
             
-        return results
+    def getHits(self):
+        if self.results:
+            return self.results.hits
+        else:
+            return 0         
+
+    def getQuery(self):
+        return self.query                  
