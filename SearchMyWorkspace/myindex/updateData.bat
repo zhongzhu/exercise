@@ -1,0 +1,1 @@
+java -Durl="http://localhost:8983/solr/mytc/update" -jar post.jar mytc\updatexml.xml
